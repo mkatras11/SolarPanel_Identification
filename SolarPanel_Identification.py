@@ -162,6 +162,20 @@ def save_centroids_to_csv(img_path, centroids):
         for centroid in centroids:
             writer.writerow(centroid)  # Write centroid coordinates to CSV
 
+def save_gps_to_csv(img_path, gps_coords):
+    
+    # Save GPS coordinates to a CSV file
+    if img_path.endswith(".tif"):
+        csv_path = img_path.replace(".tif", "_gps.csv")  # Generate CSV file path for .tif
+    else:
+        csv_path = img_path.replace(".jpg", "_gps.csv")  # Generate CSV file path for .jpg
+
+    with open(csv_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["GPS_X", "GPS_Y"])  # Write header row
+        for gps_coord in gps_coords:
+            writer.writerow(gps_coord)  # Write GPS coordinates to CSV
+
 
 
 def process_all_images(folder_path):
@@ -198,13 +212,16 @@ def process_all_images(folder_path):
                     output_path = os.path.join(root, image_file.replace(".jpg", "_prediction.jpg"))
 
                 cv2.imwrite(output_path, image_with_centroids)  # Save the processed image
+
                 save_centroids_to_csv(img_path, centroids)  # Save centroids to a CSV file
+
+                save_gps_to_csv(img_path, gps_centroids)  # Save GPS coordinates to a CSV file
 
 
 
 if __name__ == "__main__":
 
     # Specify the folder containing images to be processed
-    folder_path = "/home/mikek11/projects/SolarPanel_Identification/Vision_SolarPanels_Images" # Replace with the path to the folder containing the images
+    folder_path = "/home/mikek11/projects/SolarPanel_Identification/CDR" # Replace with the path to the folder containing the images
     
     process_all_images(folder_path)  # Process all images in the specified folder
