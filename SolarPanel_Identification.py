@@ -126,23 +126,26 @@ def get_image_metadata(image_path):
     except (AttributeError, KeyError, IndexError):
         return None
 
-def pixel2gps (px, py, tie_points, metadata):
+def pixel2gps (metadata, centroids):
 
+    # Get tie points and scale from image metadata
     tie_points = list(metadata.items())[0][1]
     scale = list(metadata.items())[1][1]
    
     gps_x0 = tie_points[3]
     gps_y0 = tie_points[4]
 
-
     scale_x = scale[0]
     scale_y = scale[1]
 
+    # Convert pixel coordinates to GPS coordinates
+    gps_coords = []
+    for centroid in centroids:
+        gps_coord_x = gps_x0 + (centroid[0] * scale_x)
+        gps_coord_y = gps_y0 + (centroid[1] * scale_y)
+        gps_coords.append((gps_coord_x, gps_coord_y))
 
-    gps_coord_x = gps_x0 + (px * scale_x)
-    gps_coord_y = gps_y0 + (py * scale_y)
-
-    return gps_coord_x, gps_coord_y
+    return gps_coords
 
 
 def save_centroids_to_csv(img_path, centroids):
@@ -183,6 +186,10 @@ def process_all_images(folder_path):
                 centroids = find_centroids(filtered_contours)  # Find centroids of filtered contours
 
                 image_with_centroids = draw_image(input_image, filtered_contours, centroids)  # Draw contours and centroids on the original image
+
+                metadata = get_image_metadata(img_path)  # Get metadata of the image
+
+                gps_centroids = pixel2gps(metadata, centroids)  # Convert pixel coordinates to GPS coordinates
 
                 # Define output path for the processed image
                 if image_file.endswith(".tif"):
