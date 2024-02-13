@@ -17,3 +17,13 @@ conda activate solar-panel
 
 pip install -r requirements.txt
 
+```
+
+### Usage
+
+To run the project:
+
+```bash
+python SolarPanel_Identification.py
+
+```
