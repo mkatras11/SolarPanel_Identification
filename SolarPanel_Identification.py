@@ -126,6 +126,23 @@ def get_image_metadata(image_path):
     except (AttributeError, KeyError, IndexError):
         return None
 
+def pixel2gps (px, py, tie_points, metadata):
+
+    tie_points = list(metadata.items())[0][1]
+    scale = list(metadata.items())[1][1]
+   
+    gps_x0 = tie_points[3]
+    gps_y0 = tie_points[4]
+
+
+    scale_x = scale[0]
+    scale_y = scale[1]
+
+
+    gps_coord_x = gps_x0 + (px * scale_x)
+    gps_coord_y = gps_y0 + (py * scale_y)
+
+    return gps_coord_x, gps_coord_y
 
 
 def save_centroids_to_csv(img_path, centroids):
