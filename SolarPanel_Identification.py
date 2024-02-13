@@ -164,6 +164,6 @@ def process_all_images(folder_path):
 if __name__ == "__main__":
 
     # Specify the folder containing images to be processed
-    folder_path = "/home/mikek11/projects/Quindi/Vision_SolarPanels_Images" # Replace with the path to the folder containing the images
+    folder_path = "/home/mikek11/projects/SolarPanel_Identification/Vision_SolarPanels_Images" # Replace with the path to the folder containing the images
     
     process_all_images(folder_path)  # Process all images in the specified folder
