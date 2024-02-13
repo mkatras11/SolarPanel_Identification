@@ -3,8 +3,10 @@ import numpy as np
 import os
 from tqdm import tqdm
 import csv
+import PIL
 from PIL import Image
 from PIL.ExifTags import TAGS
+PIL.Image.MAX_IMAGE_PIXELS = 933120000
 
 
 
@@ -122,6 +124,7 @@ def get_image_metadata(image_path):
                 metadata[tag_name] = value
             return metadata
         else:
+            print("No metadata found for the image.")
             return None
     except (AttributeError, KeyError, IndexError):
         return None
@@ -203,7 +206,8 @@ def process_all_images(folder_path):
 
                 metadata = get_image_metadata(img_path)  # Get metadata of the image
 
-                gps_centroids = pixel2gps(metadata, centroids)  # Convert pixel coordinates to GPS coordinates
+                if metadata is not None:
+                    gps_centroids = pixel2gps(metadata, centroids)  # Convert pixel coordinates to GPS coordinates
 
                 # Define output path for the processed image
                 if image_file.endswith(".tif"):
@@ -214,14 +218,15 @@ def process_all_images(folder_path):
                 cv2.imwrite(output_path, image_with_centroids)  # Save the processed image
 
                 save_centroids_to_csv(img_path, centroids)  # Save centroids to a CSV file
-
-                save_gps_to_csv(img_path, gps_centroids)  # Save GPS coordinates to a CSV file
+                
+                if metadata is not None:
+                    save_gps_to_csv(img_path, gps_centroids)  # Save GPS coordinates to a CSV file
 
 
 
 if __name__ == "__main__":
 
     # Specify the folder containing images to be processed
-    folder_path = "/home/mikek11/projects/SolarPanel_Identification/CDR" # Replace with the path to the folder containing the images
+    folder_path = "/home/mikek11/projects/SolarPanel_Identification/Vision_SolarPanels_Images" # Replace with the path to the folder containing the images
     
     process_all_images(folder_path)  # Process all images in the specified folder
