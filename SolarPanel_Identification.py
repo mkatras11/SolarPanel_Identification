@@ -3,6 +3,8 @@ import numpy as np
 import os
 from tqdm import tqdm
 import csv
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 
 
@@ -108,6 +110,21 @@ def preprocess_image(img_path):
     img = cv2.fastNlMeansDenoising(img, h=10)  # Apply non-local means denoising
 
     return img, input_image
+
+def get_image_metadata(image_path):
+    try:
+        image = Image.open(image_path)
+        exif_data = image._getexif()
+        if exif_data is not None:
+            metadata = {}
+            for tag, value in exif_data.items():
+                tag_name = TAGS.get(tag, tag)
+                metadata[tag_name] = value
+            return metadata
+        else:
+            return None
+    except (AttributeError, KeyError, IndexError):
+        return None
 
 
 
